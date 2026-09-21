@@ -1,5 +1,7 @@
 # Contraction Hierarchies – erst vorrechnen, dann blitzschnell fragen – Streamlit-Demo
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-contraction-hierarchies-demo.streamlit.app/)**
+
 Viertes Stück der **Kürzeste-Wege-Linie** der "Konzepte"-Reihe für die Website "Sebastian Hanisch – Operations Research und Machine Learning", Fortsetzung der [Demo zur bidirektionalen Suche](../bidirectional-demo):
 anders als die Fall-Demos im Portfolio (ein Anwendungsfall, mehrere Verfahren im Vergleich) zeigt diese Demo **ein** Verfahren – **Contraction Hierarchies (CH)** – an einem wachsenden Beispiel.
 Die bidirektionale Suche beginnt jede Anfrage von vorn und legt im Toronto-Netz für ein Paar mehrere tausend Knoten fest. CH **rechnet einmal vor**: die Knoten werden nach Wichtigkeit geordnet und von unten nach oben **zusammengezogen**,
