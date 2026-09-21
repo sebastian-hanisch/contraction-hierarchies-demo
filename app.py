@@ -266,7 +266,7 @@ view_slot = st.empty()
 
 def _render(current):
     with view_slot.container():
-        st.plotly_chart(build_query(net, a, current, show_uni, show_bi, height=460 if small else 540), width="stretch", key="query_chart")
+        st.plotly_chart(build_query(net, a, current, show_uni, show_bi, height=460 if small else 540), width="stretch", key=f"query_chart_{current}")
 
 
 if auto_play:
