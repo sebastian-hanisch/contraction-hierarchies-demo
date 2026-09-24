@@ -22,6 +22,7 @@ from ch_presets import (
     init_session_state_defaults,
     load_permalink_settings,
     randomize_seed,
+    seed_widget,
     sync_query_params,
 )
 from ch_scenario import make_network
@@ -125,7 +126,7 @@ init_session_state_defaults()
 
 # Zahl der Knoten des gewählten Netzes (für die Ordnung "zufällig", die bei großen Netzen Minuten braucht)
 _net_now = st.session_state["net_select"]
-_n_now = {"small": 8, "toronto": 10153}.get(_net_now, int(st.session_state.get("side_slider", C.DEFAULT_SIDE)) ** 2 if _net_now == "city" else int(st.session_state.get("nodes_slider", C.DEFAULT_NODES)))
+_n_now = {"small": 8, "toronto": 10153}.get(_net_now, int(st.session_state.get("side_slider", st.session_state.get(KEPT["side_slider"], C.DEFAULT_SIDE))) ** 2 if _net_now == "city" else int(st.session_state.get("nodes_slider", st.session_state.get(KEPT["nodes_slider"], C.DEFAULT_NODES))))
 order_options = [o for o in C.ORDER_LABELS if o != "random" or _n_now <= C.RANDOM_ORDER_MAX_NODES]
 if st.session_state["order_select"] not in order_options:
     st.session_state["order_select"] = C.DEFAULT_ORDER
@@ -138,15 +139,19 @@ with st.sidebar:
              "Die Vorberechnung läuft beim ersten Aufruf eines Netzes live (Sekunden) und wird dann gemerkt.",
     )
     if net_key == "city":
+        seed_widget("side_slider")
         side = st.slider("Kreuzungen je Seite", *bounds("side_slider"), key="side_slider",
                          help="Größe des Stadtnetzes. Gewinn der CH-Abfrage gegen die bidirektionale Suche (Median über Paare, Mittel über fünf Netze) bei 10 / 20 / 30 Kreuzungen je Seite: 0.8-fach / 1.1-fach / 1.4-fach - größere Netze haben mehr Hierarchie.")
         st.session_state[KEPT["side_slider"]] = side
+        seed_widget("reach_slider")
         reach = st.slider("Reichweite der Straßen [Blocklängen]", *bounds("reach_slider"), key="reach_slider", step=0.1,
                           help="Wie weit eine Straße zwischen zwei Kreuzungen reichen darf (1 = nur Nachbarn im Raster). Gewinn gegen die bidirektionale Suche bei 1.0 / 1.5 / 2.3 / 3.2: 3.3-fach / 1.9-fach / 1.1-fach / 0.9-fach - dichte Netze verlieren ihre Hierarchie.")
         st.session_state[KEPT["reach_slider"]] = reach
+        seed_widget("spread_slider")
         spread = st.slider("Streuung der Kosten", *bounds("spread_slider"), key="spread_slider", step=0.25,
                            help="Kosten einer Straße = Länge × (1 + Streuung × Zufall), gerundet auf ganze Meter. Gewinn gegen die bidirektionale Suche bei 0 / 1 / 3: 1.0-fach / 1.1-fach / 1.3-fach - ungleiche Kosten helfen der Hierarchie etwas.")
         st.session_state[KEPT["spread_slider"]] = spread
+        seed_widget("blocked_slider")
         blocked = st.slider("Gesperrte Straßen [%]", *bounds("blocked_slider"), key="blocked_slider",
                             help="Anteil der gesperrten Straßen (das Netz bleibt zusammenhängend). Gewinn gegen die bidirektionale Suche bei 0 / 20 / 60 %: 1.1-fach / 1.1-fach / 1.5-fach - im ausgedünnten Netz trägt die Hierarchie etwas mehr.")
         st.session_state[KEPT["blocked_slider"]] = blocked
@@ -156,14 +161,17 @@ with st.sidebar:
         spread = float(st.session_state.get(KEPT["spread_slider"], C.DEFAULT_SPREAD))
         blocked = int(st.session_state.get(KEPT["blocked_slider"], C.DEFAULT_BLOCKED))
     if net_key == "random":
+        seed_widget("nodes_slider")
         nodes = st.slider("Knoten", *bounds("nodes_slider"), key="nodes_slider", step=100, help="Anzahl der Knoten des Zufallsnetzes.")
         st.session_state[KEPT["nodes_slider"]] = nodes
+        seed_widget("degree_slider")
         degree = st.slider("Mittlerer Grad", *bounds("degree_slider"), key="degree_slider", step=0.5, help="Wie viele Nachbarn ein Knoten im Mittel hat. Gewinn der CH-Abfrage gegen die bidirektionale Suche (Median über Paare, Mittel über fünf Netze, 600 Knoten) bei Grad 2.5 / 4 / 6: 1.2-fach / 0.6-fach / 0.4-fach - je dichter das Netz, desto weniger Hierarchie.")
         st.session_state[KEPT["degree_slider"]] = degree
     else:
         nodes = int(st.session_state.get(KEPT["nodes_slider"], C.DEFAULT_NODES))
         degree = float(st.session_state.get(KEPT["degree_slider"], C.DEFAULT_DEGREE))
     if net_key != "small":
+        seed_widget("distance_slider")
         distance = st.slider("Entfernung Start–Ziel [%]", *bounds("distance_slider"), key="distance_slider",
                              help="Welcher Knoten das Ziel ist: der, dessen Entfernung vom Start in der Rangfolge aller erreichbaren Knoten bei diesem Prozentwert liegt (100 = der am weitesten entfernte).")
         st.session_state[KEPT["distance_slider"]] = distance
@@ -175,6 +183,7 @@ with st.sidebar:
     witness = st.selectbox("Zeugensuche (Knoten je Suche)", list(C.WITNESS_OPTIONS), key="witness_select", format_func=lambda k: C.WITNESS_LABELS[k],
                            help="Wie viele Knoten eine Zeugensuche höchstens festlegt. Weniger Zeugen kosten nur Abkürzungen, nie Richtigkeit: in Toronto bei 1 / 5 / 20 / 200 Knoten 3.1 / 2.2 / 1.5 / 1.4 Abkürzungen je Kante.")
     if net_key in ("city", "random"):
+        seed_widget("seed_input")
         seed = st.number_input("Zufalls-Seed", *bounds("seed_input"), key="seed_input", step=1)
         st.session_state[KEPT["seed_input"]] = seed
         st.button("🎲 Neues Netz generieren", width="stretch", on_click=randomize_seed, help="Würfelt einen neuen Zufalls-Seed für das Netz.")
