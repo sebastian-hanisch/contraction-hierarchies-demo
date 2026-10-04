@@ -410,13 +410,13 @@ st.markdown(
     """
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
-| **Die Kosten ändern sich nicht** | Toronto: schon bei 2 % teureren Kanten stimmen bei 78 % der Paare die berichteten Kosten nicht mehr, bei 60 % ist die Route nicht mehr die kürzeste; bei 20 % teureren Kanten sind es 100 % und 95 %. Neu vorrechnen dauert Sekunden. | angepasste Hierarchien für wechselnde Kosten (nicht gebaut) |
+| **Die Kosten ändern sich nicht** | Toronto: schon bei 2 % teureren Kanten stimmen bei 78 % der Paare die berichteten Kosten nicht mehr, bei 60 % ist die Route nicht mehr die kürzeste; bei 20 % teureren Kanten sind es 100 % und 95 %. Neu vorrechnen dauert Sekunden. | angepasste Hierarchien für wechselnde Kosten (Customizable Contraction Hierarchies, gebaut) |
 | **Das Netz hat eine Hierarchie** | Toronto: im Median 21-fach weniger festgelegte Knoten als bidirektional. Stadtnetz-Gitter: 1.1-fach. Zufallsnetz: 0.5-fach - die CH-Abfrage legt fast doppelt so viele Knoten fest, die Vorberechnung fügt 1.9 Abkürzungen je Kante ein. | (die Form des Netzes entscheidet) |
 | **Vorrechnen lohnt sich** | Die Vorberechnung kostet Sekunden und Speicher für die Abkürzungen (Toronto: 1.4 je Kante); erst nach vielen Anfragen ist sie ausgeglichen (Messwert im Kernabschnitt); für wenige Anfragen lohnt sie sich nicht. | |
 | **Nur Start-Ziel-Anfragen** | CH beantwortet ein Paar nach dem anderen; für die Entfernungen zwischen **allen** Paaren gibt es andere Verfahren. | **Floyd-Warshall**, **Johnson** |
 """
 )
-st.caption("Die Nachbarn der Kürzeste-Wege-Linie (noch nicht gebaut): Bellman-Ford, Floyd-Warshall, Johnson und Mehrkriterien-Routing. Bereits gebaut: Breitensuche, Dijkstra und bidirektionale Suche.")
+st.caption("Die Nachbarn der Kürzeste-Wege-Linie sind inzwischen gebaut: Bellman-Ford, Floyd-Warshall, Johnson und Mehrkriterien-Routing (davor Breitensuche, Dijkstra und bidirektionale Suche).")
 
 st.markdown("---")
 
@@ -448,6 +448,6 @@ st.markdown("---")
 
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
-    "Operations Research und Machine Learning. Interesse an einer maßgeschneiderten Lösung für "
-    "Ihr Unternehmen? [Kontakt aufnehmen](https://sebastianhanisch.net/kontakt.html)"
+    "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
+    "Mehr zur Reihe: [Kürzeste Wege: von der Breitensuche bis RAPTOR](https://sebastianhanisch.net/konzepte-kuerzeste-wege.html)."
 )
